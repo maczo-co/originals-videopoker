@@ -1,0 +1,34 @@
+{
+  "name": "@maczo/originals-videopoker",
+  "version": "1.0.0",
+  "description": "Open-source provably-fair verifier for the \"Video Poker\" maczo Originals game.",
+  "license": "MIT",
+  "type": "module",
+  "main": "resolve.js",
+  "scripts": {
+    "test": "node verify.js --selftest"
+  },
+  "dependencies": {
+    "@maczo/originals-verify": "github:maczo-co/originals-verify"
+  },
+  "files": [
+    "resolve.js",
+    "verify.js",
+    "paytable.json",
+    "test-vectors.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maczo-co/originals-videopoker"
+  },
+  "homepage": "https://verify.maczo.co/originals/?game=videopoker",
+  "keywords": [
+    "provably-fair",
+    "verifier",
+    "maczo",
+    "originals",
+    "videopoker"
+  ]
+}
