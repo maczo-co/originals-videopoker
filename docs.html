@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>maczo Originals — Video Poker · Docs</title>
+<style>
+  :root { --bg:#0F212E; --panel:#152C3B; --line:#20455c; --fg:#dbe7ef; --mut:#8fa9ba; --acc:#1FFF20; --blue:#1475E1; color-scheme:dark; }
+  * { box-sizing:border-box; } body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.6 "Bai Jamjuree",system-ui,Segoe UI,Roboto,sans-serif; }
+  a { color:var(--blue); text-decoration:none; } a:hover { text-decoration:underline; }
+  .wrap { max-width:820px; margin:0 auto; padding:26px 18px 80px; }
+  h1 { font-size:23px; margin:0 0 4px; } h1 .pill{color:var(--acc);} h2 { margin-top:30px; border-bottom:1px solid var(--line); padding-bottom:6px; }
+  pre { background:#0b1922; border:1px solid var(--line); border-radius:8px; padding:14px; overflow:auto; font-size:13px; color:#cfe; }
+  code { font-family:ui-monospace,Consolas,monospace; color:#bfe; } .top { color:var(--mut); font-size:13px; }
+  .pill2 { display:inline-block; background:#0b1922; border:1px solid var(--line); border-radius:6px; padding:1px 8px; font-size:12px; color:var(--mut); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="top"><a href="./">← Verifier</a></p>
+  <h1>maczo <span class="pill">Originals</span> — Video Poker · Provably Fair</h1>
+  <p class="top">Open source · MIT · offline · zero-dependency. The crypto core is the shared engine
+    <a href="https://github.com/maczo-co/originals-verify">originals-verify</a>; this game adds the pure Video Poker resolver.
+    Full pages: <a href="https://github.com/maczo-co/originals-videopoker/tree/main/wiki">wiki</a>.</p>
+
+  <h2>The engine (frozen)</h2>
+  <p>Every Originals game draws its randomness from one frozen recipe — <b>uint32</b> words (this differs
+     from Lucky Spin, which uses uint64 words + rejection sampling):</p>
+  <pre>commitment = SHA-256(serverSeed)                         # lowercase hex, shown before any bet
+for cursor = 0, 1, 2, …:                                 # advance when more words are needed
+    digest = HMAC-SHA256(key = serverSeed, msg = `${clientSeed}:${nonce}:${cursor}`)
+    consume 4 bytes at a time, big-endian, as uint32 words   # u in [0, 2^32)</pre>
+  <p>Settlement compares integers derived from the words — no floating point. A payout is
+     <code>floor(bet × multiplier_e8 / 1e8)</code>.</p>
+
+  <h2>Video Poker's resolve step <span class="pill2">bias: uniform</span></h2>
+  <p>deck = shuffle(52); deal order[:5]; holds keep, others draw from order[5:]; final 5-card hand pays payoutMultiplier[category]× (multiplier_e8 = that × 1e8).</p>
+  <p class="top">Bias class <b>uniform</b> — maps words without a biased modulo reduction (bit extraction, or a uniform Fisher-Yates / without-replacement draw) — no modulo bias.</p>
+
+  <h2>Three ways to verify</h2>
+  <ol>
+    <li><b>One click.</b> After a seed is revealed, each bet deep-links to the shared verifier:
+      <code>verify.maczo.co/originals/?game=videopoker&amp;server=…&amp;commit=…&amp;client=…&amp;nonce=…&amp;params=…</code> — or open this repo's
+      <a href="./">index.html</a> (self-contained, offline).</li>
+    <li><b>Browser, manual.</b> Open <a href="./">index.html</a>, paste your <code>serverSeed</code> /
+      <code>clientSeed</code> / <code>nonce</code> / params, press Verify. View source — nothing leaves your machine.</li>
+    <li><b>Node CLI.</b> <code>git clone https://github.com/maczo-co/originals-videopoker &amp;&amp; cd originals-videopoker &amp;&amp; npm install &amp;&amp; npm test</code>
+      reproduces the bundled known-answer vectors (JS ⇄ the server's authoritative Python).</li>
+  </ol>
+
+  <h2>Published odds</h2>
+  <p>The odds are published at <a href="./paytable.json">paytable.json</a> — the resolver only indexes
+     into it, so the odds you see are the odds that settled your bet.</p>
+
+  <h2>Reveal</h2>
+  <p>Before the seed is revealed the verifier can still check the <b>commitment</b>; it cannot reproduce
+     the outcome (the deep-link shows “awaiting reveal”). After you rotate your seed, the revealed
+     <code>serverSeed</code> is the exact HMAC key and the full outcome reproduces offline.</p>
+</div>
+</body>
+</html>
