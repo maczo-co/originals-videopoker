@@ -16,7 +16,7 @@ stream, per `libs/provably_fair/fair.py`) lives ONCE in the shared engine
 | ⚖️ Published odds | <https://verify.maczo.co/originals/paytables/videopoker.json> |
 | 🔧 Shared engine | <https://github.com/maczo-co/originals-verify> |
 
-- **Bias class:** `uniform` — uses a uniform Fisher-Yates / without-replacement draw — no modulo bias.
+- **Bias class:** `uniform` — maps words without a biased modulo reduction (bit extraction, or a uniform Fisher-Yates / without-replacement draw) — no modulo bias.
 - **Recipe:** deck = shuffle(52); deal order[:5]; holds keep, others draw from order[5:]; final 5-card hand pays payoutMultiplier[category]× (multiplier_e8 = that × 1e8).
 
 ## Files
