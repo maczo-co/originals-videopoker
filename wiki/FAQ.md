@@ -34,6 +34,6 @@ Double-check you used the **revealed** server seed (after Rotate), the exact cli
 for that bet, and the same bet inputs. The math is deterministic, so a correct input always reproduces the
 published result.
 
-### Is this the same family as Stake / BC.Game?
-Yes — the same HMAC-SHA256 commit-reveal family. The implementation is open source (MIT) so anyone can
-audit it.
+### Is this a standard provably-fair scheme?
+Yes — it is the widely used HMAC-SHA256 commit-reveal scheme. The implementation is open source (MIT) so
+anyone can audit it.
